@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'chat',
-    'encryption'
+    'encryption',
+    'elasticsearch_utils'
 ]
 
 MIDDLEWARE = [
