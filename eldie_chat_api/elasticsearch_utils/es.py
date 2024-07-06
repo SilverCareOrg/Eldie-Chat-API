@@ -1,13 +1,13 @@
 import environ
 
 from elasticsearch import Elasticsearch, NotFoundError
-from datetime import datetime
+from datetime import datetime, timezone
 
 env = environ.Env()
 environ.Env.read_env()
 
 def instantiate_elasticsearch():
-
+    
 	ELASTIC_HOST = f"https://{env('ELDIE_ELASTICSEARCH_HOST')}/elastic/"
 	ELASTIC_USER = env('ELDIE_ELASTICSEARCH_USER')
 	ELASTIC_PASSWORD = env('ELDIE_ELASTICSEARCH_PASSWORD')
@@ -26,12 +26,12 @@ def save_message_to_es(es, user, message, d):
 	doc = {
 		'user': user,
 		'message': message,
-		'timestamp': datetime.now(),
+		'timestamp': datetime.now(timezone.utc).replace(tzinfo=timezone.utc).timestamp(),
 		'direction': d
 	}
 
 	save_to_es(es, env('ELDIE_ES_MESSAGES_INDEX'), doc)
- 
+
 def save_keypoints_to_es(es, user, keypoints):
 	doc = {
 		'user': user,

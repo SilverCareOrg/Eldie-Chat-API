@@ -10,6 +10,7 @@ from .utils import (
     get_user,
     summarize_conversation,
     get_previous_chat,
+    get_last_messages,
 )
 from elasticsearch_utils.es import (
     save_message_to_es,
@@ -33,7 +34,7 @@ def chat_send_message(request):
     completion = openai_client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "You are a helpful assistant for elderly people. Consider the previous chat but try to respond to the new message."},
+            {"role": "system", "content": "You are a helpful assistant for elderly people. Your name is \"Eldie\". Consider the previous chat but try to respond to the new message."},
             {"role": "user", "content": f"Previous Chat: {previous_chat}, New message: {message}"}
         ],
         user=user,
@@ -50,3 +51,16 @@ def chat_send_message(request):
     save_keypoints_to_es(es, user, keypoints)    
 
     return JsonResponse({'response': response})
+
+@api_view(['GET'])
+def get_previous_messages(request):
+
+    inf = int(request.GET.get('inf', 0))
+    sup = int(request.GET.get('sup', 10))
+
+    user = get_user(request)
+    es = instantiate_elasticsearch()
+
+    res = get_last_messages(es, user, inf, sup)
+    print(res)
+    return JsonResponse(res)

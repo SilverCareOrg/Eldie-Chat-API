@@ -55,3 +55,49 @@ def get_previous_chat(es, user):
         return result
     except:
         return "No previous chat found."
+    
+def get_last_messages(es, user, inf, sup):
+    """
+        inf - lower bound for the number of messages
+        sup - upper bound for the number of messages
+    """
+
+    try:
+        response = es.search(
+            index = env('ELDIE_ES_MESSAGES_INDEX'),
+            body = {
+                'query': {
+                    'match': {
+                        'user': user
+                    }
+                },
+                'sort': [
+                    {
+                        'timestamp': {
+                            'order': 'desc'
+                        }
+                    }
+                ],
+                'from': inf,
+                'size': sup
+            }
+        )
+
+        if len(response['hits']['hits']) == 0:
+            return "No previous chat found."
+
+        result = {
+            'messages': [
+                {
+                    'timestamp': hit['_source']['timestamp'],
+                    'message': hit['_source']['message'],
+                    'sender': 'user' if hit['_source']['direction'] == 'to' else 'assistant'
+                } for hit in response['hits']['hits']
+            ]
+        }
+        return result
+    except Exception as e:
+        print(e)
+        return []
+        
+    
