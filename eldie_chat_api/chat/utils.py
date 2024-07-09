@@ -67,7 +67,7 @@ def get_last_messages(es, user, inf, sup):
             index = env('ELDIE_ES_MESSAGES_INDEX'),
             body = {
                 'query': {
-                    'match': {
+                    'term': {
                         'user': user
                     }
                 },
