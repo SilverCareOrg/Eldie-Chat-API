@@ -63,4 +63,4 @@ def get_previous_messages(request):
 
     res = get_last_messages(es, user, inf, sup)
     print(res)
-    return JsonResponse(res)
+    return JsonResponse(res, safe=False)
