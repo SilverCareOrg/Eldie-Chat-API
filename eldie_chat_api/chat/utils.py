@@ -33,7 +33,7 @@ def get_previous_chat(es, user):
             index = env('ELDIE_ES_SUMMARIZED_MESSAGES_INDEX'),
             body = {
                 'query': {
-                    'match': {
+                    'term': {
                         'user': user
                     }
                 },
