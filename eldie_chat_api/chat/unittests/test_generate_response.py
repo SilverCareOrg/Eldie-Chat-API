@@ -2,7 +2,7 @@ import pytest
 import time
 import os
 
-from chat.utils import generate_response
+from eldie_chat_api.chat.utils import generate_response
 from openai import OpenAI
 # Read OpenAI API key from "../../eldie_chat_api/.env" file
 from dotenv import load_dotenv
