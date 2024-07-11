@@ -14,6 +14,20 @@ def get_user(request):
 
     return jwt.decode(token, key = 'SECRET_KEY', algorithms = ['HS256'])['username']
 
+def generate_response(openai_client, user, previous_chat, message):
+    completion = openai_client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant for elderly people. Your name is \"Eldie\". Consider the previous chat if it exists but try to respond to the new message according to the user. Consider responding in romanian if the question is in romanian."},
+            {"role": "user", "content": f"Previous Chat: {previous_chat}, New message: {message}"}
+        ],
+        user=user,
+        temperature=0.5,
+    )
+    
+    response = completion.choices[0].message.content
+    return response
+
 def summarize_conversation(openai, user, text):
     response = openai.chat.completions.create(
         model="gpt-3.5-turbo",

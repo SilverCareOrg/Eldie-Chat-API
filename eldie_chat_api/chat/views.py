@@ -11,6 +11,7 @@ from .utils import (
     summarize_conversation,
     get_previous_chat,
     get_last_messages,
+    generate_response,
 )
 from elasticsearch_utils.es import (
     save_message_to_es,
@@ -31,17 +32,7 @@ def chat_send_message(request):
 
     previous_chat = get_previous_chat(es, user)
 
-    completion = openai_client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant for elderly people. Your name is \"Eldie\". Consider the previous chat if it exists but try to respond to the new message according to the user. Consider responding in romanian if the question is in romanian."},
-            {"role": "user", "content": f"Previous Chat: {previous_chat}, New message: {message}"}
-        ],
-        user=user,
-        temperature=0.5,
-    )
-
-    response = completion.choices[0].message.content
+    response = generate_response(openai_client, user, previous_chat, message)
     
     save_message_to_es(es, user, response, 'from')
     
