@@ -86,13 +86,14 @@ def get_last_messages(es, user, inf, sup):
         if len(response['hits']['hits']) == 0:
             return "No previous chat found."
 
+        latest_messages = sorted(response['hits']['hits'], key=lambda x: x['_source']['timestamp'], reverse=True)
         result = {
             'messages': [
                 {
                     'timestamp': hit['_source']['timestamp'],
                     'message': hit['_source']['message'],
                     'sender': 'user' if hit['_source']['direction'] == 'to' else 'assistant'
-                } for hit in response['hits']['hits']
+                } for hit in latest_messages
             ]
         }
         return result

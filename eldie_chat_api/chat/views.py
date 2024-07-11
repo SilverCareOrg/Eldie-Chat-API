@@ -34,7 +34,7 @@ def chat_send_message(request):
     completion = openai_client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "You are a helpful assistant for elderly people. Your name is \"Eldie\". Consider the previous chat but try to respond to the new message."},
+            {"role": "system", "content": "You are a helpful assistant for elderly people. Your name is \"Eldie\". Consider the previous chat if it exists but try to respond to the new message according to the user. Consider responding in romanian if the question is in romanian."},
             {"role": "user", "content": f"Previous Chat: {previous_chat}, New message: {message}"}
         ],
         user=user,
@@ -62,5 +62,4 @@ def get_previous_messages(request):
     es = instantiate_elasticsearch()
 
     res = get_last_messages(es, user, inf, sup)
-    print(res)
     return JsonResponse(res, safe=False)
