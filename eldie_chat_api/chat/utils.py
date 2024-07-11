@@ -34,7 +34,7 @@ def get_previous_chat(es, user):
             body = {
                 'query': {
                     'term': {
-                        'user': user
+                        'user.keyword': user
                     }
                 },
                 'sort': [
@@ -68,7 +68,7 @@ def get_last_messages(es, user, inf, sup):
             body = {
                 'query': {
                     'term': {
-                        'user': user
+                        'user.keyword': user
                     }
                 },
                 'sort': [
